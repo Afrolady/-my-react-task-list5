@@ -1,31 +1,53 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faTrash, faCheck } from "@fortawesome/free-solid-svg-icons";
 
-export default function Task({ task, deleteTask, editTask, idEdit }) {
+export default function Task({
+  task,
+  deleteTask,
+  editTask,
+  updateTask,
+  idEdit,
+  handleEditInputChange,
+  handleEditInputCheckbox,
+}) {
+  const isEditing = idEdit === task.id;
+
   return (
     <div>
       <div className="task">
-        <input type="checkbox" />
-        {idEdit == task.id ? (
-          <p>{task.name}</p>
+        <input
+          type="checkbox"
+          checked={task?.completed ? true : false}
+          onChange={(e) => handleEditInputCheckbox(e, task.id)}
+        />
+        {isEditing ? (
+          <input
+            className="input-edit"
+            type="text"
+            value={task.name}
+            onChange={(e) => handleEditInputChange(e, task.id)}
+            onKeyDown={(event) => {
+              if (event.keyCode === 13) {
+                updateTask(task.id);
+              }
+            }}
+          />
         ) : (
-          <input className="input-edit" type="text" />
+          <p style={ task.completed? { textDecoration: 'line-through' } : {}}>{task.name}</p>
         )}
         <div>
-          <button
-            onClick={() => {
-              editTask(task.id);
-            }}
-          >
-            <FontAwesomeIcon icon={faEdit} color="green" />
-          </button>
+          {isEditing ? (
+            <button onClick={() => updateTask(task.id)}>
+              <FontAwesomeIcon icon={faCheck} color="blue" />
+            </button>
+          ) : (
+            <button onClick={() => editTask(task.id)}>
+              <FontAwesomeIcon icon={faEdit} color="green" />
+            </button>
+          )}
 
-          <button
-            onClick={() => {
-              deleteTask(task.id);
-            }}
-          >
+          <button onClick={() => deleteTask(task.id)}>
             <FontAwesomeIcon icon={faTrash} color="red" />
           </button>
         </div>

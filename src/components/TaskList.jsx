@@ -2,73 +2,120 @@ import React, { useEffect, useState } from "react";
 import Task from "./Task";
 
 export default function TaskList() {
-  const [name, setName] = useState(""); //Indica el estado inicial con el que quiero inicializar el estado
+  const [name, setName] = useState("");
   const [tasks, setTasks] = useState([]);
   const [idEdit, setIdEdit] = useState(null);
-  const changeName = (e) => {
-    setName(e.target.value); //obtiene el input que escribe el usuario y lo actualiza
-  };
 
-  //UseEffect analiza una variable. cuando me quiero dar cuenta si el state cambia. se inicia por default
   useEffect(() => {
     const tasksLocalStorage = getTasks();
     setTasks(tasksLocalStorage);
   }, []);
 
+  const changeName = (e) => {
+    setName(e.target.value);
+  };
+
+  const handleEditInputChange = (e, taskId) => {
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === taskId) {
+        return { ...task, name: e.target.value };
+      }
+      return task;
+    });
+    setTasks(updatedTasks);
+  };
+
+  const handleEditInputCheckbox = (e, taskId) => {
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === taskId) {
+        return { ...task, completed: e.target.checked };
+      }
+      return task;
+    });
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+    setTasks(updatedTasks);
+  };
+
+  const handleEditTask = (taskId) => {
+    setIdEdit(taskId);
+  };
+
+  const updateTask = (taskId) => {
+    setIdEdit(null);
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === taskId) {
+        return { ...task };
+      }
+      return task;
+    });
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+    setTasks(updatedTasks);
+  };
+
   const createTask = () => {
-    const id = math;
-    const newTask = { name, id };
-    if (name.length === 0) {
-      alert("The task cannot be empty");
+    const newTask = {
+      id: generateUniqueId(),
+      name: name,
+      completed: false,
+    };
+
+    if (name.trim() === "") {
+      alert("The task name cannot be empty");
     } else {
       saveTask(newTask);
+      setName("");
     }
   };
 
-  function saveTask(task) {
-    let newArray = tasks;
-    newArray.push(task);
-    localStorage.setItem("tasks", JSON.stringify(newArray));
-    setName(""); // set name reinicia el input.  cuando se agreaga la tarea el cuafro queda vacio
-    setTasks(newArray);
-  }
-
-  function getTasks() {
-    const tasksLocalStorage = localStorage.getItem("tasks");
-    return JSON.parse(tasksLocalStorage) || []; //cuando busque las tareas de localstorage y no existe devuelve un arreglo vacio
-  }
-
-  const deleteTask = (id) => {
-    const newArray = tasks.filter((item) => item.id !== id);
-    localStorage.setItem("tasks", JSON.stringify(newArray));
-    setTasks(newArray);
+  const saveTask = (task) => {
+    const updatedTasks = [...tasks, task];
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+    setTasks(updatedTasks);
   };
 
-  const editTask = (id) => {
-    const task = tasks.filter((item) => item.id === id)[0];
-    setIdEdit(task.id);
+  const getTasks = () => {
+    const tasksLocalStorage = localStorage.getItem("tasks");
+    return JSON.parse(tasksLocalStorage) || [];
+  };
+
+  const deleteTask = (taskId) => {
+    const updatedTasks = tasks.filter((task) => task.id !== taskId);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+    setTasks(updatedTasks);
+  };
+
+  const generateUniqueId = () => {
+    return Math.floor(Math.random() * 900) + 100;
   };
 
   return (
     <>
       <div className="container-add">
-        <input type="text" value={name} onInput={changeName} />{" "}
-        {/*/onInput cambia el valor del name cuando el usuario escribe algo en el input */}
-        <button onClick={createTask}> + </button>
+        <input
+          type="text"
+          value={name}
+          onChange={changeName}
+          onKeyDown={(event) => {
+            if (event.keyCode === 13) {
+              createTask();
+            }
+          }}
+        />
+        <button onClick={createTask}>+</button>
       </div>
-
       <div className="container-tasks">
-        {tasks?.map((task, index) => {
-          return (
-            <Task
-              task={task}
-              key={index}
-              deleteTask={deleteTask}
-              editTask={editTask}
-              idEdit={idEdit}
-            />
-          );
-        })}
+        {tasks.map((task) => (
+          <Task
+            key={task.id}
+            task={task}
+            deleteTask={deleteTask}
+            editTask={handleEditTask}
+            updateTask={updateTask}
+            idEdit={idEdit}
+            handleEditInputChange={handleEditInputChange}
+            handleEditInputCheckbox={handleEditInputCheckbox}
+          />
+        ))}
       </div>
     </>
   );
