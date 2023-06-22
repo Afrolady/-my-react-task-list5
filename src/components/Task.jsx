@@ -38,6 +38,8 @@ export default function Task({
             {task.name}
           </p>
         )}
+
+        {/* //Create buttons  */}
         <div>
           {isEditing ? (
             <button onClick={() => updateTask(task.id)}>
