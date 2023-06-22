@@ -34,9 +34,11 @@ export default function Task({
             }}
           />
         ) : (
+
           <p style={task.completed ? { textDecoration: "line-through" } : {}}>
             {task.name}
           </p>
+
         )}
 
         {/* //Create buttons  */}
