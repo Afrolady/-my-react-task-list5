@@ -15,6 +15,7 @@ export default function TaskList() {
     setTasks(tasksLocalStorage);
   }, []);
 
+  //Funcion de crear tarea
   const createTask = () => {
     const id = math;
     const newTask = { name, id };
@@ -24,6 +25,8 @@ export default function TaskList() {
       saveTask(newTask);
     }
   };
+
+  //Funcion de Guardar tarea
 
   function saveTask(task) {
     let newArray = tasks;
@@ -38,12 +41,14 @@ export default function TaskList() {
     return JSON.parse(tasksLocalStorage) || []; //cuando busque las tareas de localstorage y no existe devuelve un arreglo vacio
   }
 
+  //Funcion de eliminar tarea
   const deleteTask = (id) => {
     const newArray = tasks.filter((item) => item.id !== id);
     localStorage.setItem("tasks", JSON.stringify(newArray));
     setTasks(newArray);
   };
 
+  //Funcion de editar  tarea
   const editTask = (id) => {
     const task = tasks.filter((item) => item.id === id)[0];
     setIdEdit(task.id);
