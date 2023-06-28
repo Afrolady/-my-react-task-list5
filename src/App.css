@@ -92,7 +92,7 @@ h1 {
   width: 340px;
   padding-left: 10px;
   padding-right: 10px;
-  padding-top: 5px;
+  padding-top: 30px;
   padding-bottom: 5px;
 }
 .task, .container-edit{
@@ -144,4 +144,12 @@ button {
   outline: none !important;
   border: none !important;
 
+}
+.content-inputs{
+  display: flex;
+  flex-direction: column;
+}
+.content-inputs input {
+  margin-bottom: 5px;
+  margin-right: 5px;
 }

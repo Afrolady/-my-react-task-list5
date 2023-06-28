@@ -3,6 +3,7 @@ import Task from "./Task";
 
 export default function TaskList() {
   const [name, setName] = useState("");
+  const [description, setdescription] = useState("");
   const [tasks, setTasks] = useState([]);
   const [idEdit, setIdEdit] = useState(null);
 
@@ -13,6 +14,10 @@ export default function TaskList() {
 
   const changeName = (e) => {
     setName(e.target.value);
+  };
+
+  const changeDescription = (e) => {
+    setdescription(e.target.value);
   };
 
   const handleEditInputChange = (e, taskId) => {
@@ -56,14 +61,16 @@ export default function TaskList() {
     const newTask = {
       id: generateUniqueId(),
       name: name,
+      description: description,
       completed: false,
     };
 
-    if (name.trim() === "") {
-      alert("The task name cannot be empty");
+    if (name.trim()?.length < 3) {
+      alert("Task title must have at least three characters");
     } else {
       saveTask(newTask);
       setName("");
+      setdescription("");
     }
   };
 
@@ -75,6 +82,7 @@ export default function TaskList() {
 
   const getTasks = () => {
     const tasksLocalStorage = localStorage.getItem("tasks");
+
     return JSON.parse(tasksLocalStorage) || [];
   };
 
@@ -91,16 +99,30 @@ export default function TaskList() {
   return (
     <>
       <div className="container-add">
-        <input
-          type="text"
-          value={name}
-          onChange={changeName}
-          onKeyDown={(event) => {
-            if (event.keyCode === 13) {
-              createTask();
-            }
-          }}
-        />
+        <div className="content-inputs">
+          <input
+            type="text"
+            value={name}
+            onChange={changeName}
+            placeholder="Titulo de la tarea"
+            onKeyDown={(event) => {
+              if (event.keyCode === 13) {
+                createTask();
+              }
+            }}
+          />
+          <input
+            type="text"
+            value={description}
+            onChange={changeDescription}
+            placeholder="Descripcion de la tarea"
+            onKeyDown={(event) => {
+              if (event.keyCode === 13) {
+                createTask();
+              }
+            }}
+          />
+        </div>
         <button onClick={createTask}>+</button>
       </div>
       <div className="container-tasks">
