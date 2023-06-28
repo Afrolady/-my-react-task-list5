@@ -29,6 +29,15 @@ export default function TaskList() {
     });
     setTasks(updatedTasks);
   };
+  const handleEditDescriptionChange = (e, taskId) => {
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === taskId) {
+        return { ...task, description: e.target.value };
+      }
+      return task;
+    });
+    setTasks(updatedTasks);
+  };
 
   const handleEditInputCheckbox = (e, taskId) => {
     const updatedTasks = tasks.map((task) => {
@@ -136,6 +145,7 @@ export default function TaskList() {
             idEdit={idEdit}
             handleEditInputChange={handleEditInputChange}
             handleEditInputCheckbox={handleEditInputCheckbox}
+            handleEditDescriptionChange={handleEditDescriptionChange}
           />
         ))}
       </div>

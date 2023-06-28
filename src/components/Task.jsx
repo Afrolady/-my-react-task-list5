@@ -9,6 +9,7 @@ export default function Task({
   updateTask,
   idEdit,
   handleEditInputChange,
+  handleEditDescriptionChange,
   handleEditInputCheckbox,
 }) {
   const isEditing = idEdit === task.id;
@@ -22,23 +23,40 @@ export default function Task({
           onChange={(e) => handleEditInputCheckbox(e, task.id)}
         />
         {isEditing ? (
-          <input
-            className="input-edit"
-            type="text"
-            value={task.name}
-            onChange={(e) => handleEditInputChange(e, task.id)}
-            onKeyDown={(event) => {
-              if (event.keyCode === 13) {
-                updateTask(task.id);
-              }
-            }}
-          />
+          <>
+            <input
+              className="input-edit"
+              type="text"
+              value={task.name}
+              onChange={(e) => handleEditInputChange(e, task.id)}
+              onKeyDown={(event) => {
+                if (event.keyCode === 13) {
+                  updateTask(task.id);
+                }
+              }}
+            />
+            <input
+              className="input-edit"
+              type="text"
+              value={task.description}
+              onChange={(e) => handleEditDescriptionChange(e, task.id)}
+              onKeyDown={(event) => {
+                if (event.keyCode === 13) {
+                  updateTask(task.id);
+                }
+              }}
+            />
+          </>
         ) : (
+          <>
+            <p style={task.completed ? { textDecoration: "line-through" } : {}}>
+              {task.name}
+            </p>
 
-          <p style={task.completed ? { textDecoration: "line-through" } : {}}>
-            {task.name}
-          </p>
-
+            <p style={task.completed ? { textDecoration: "line-through" } : {}}>
+              {task.description}
+            </p>
+          </>
         )}
 
         {/* //Create buttons  */}
