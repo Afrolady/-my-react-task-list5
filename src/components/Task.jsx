@@ -1,10 +1,10 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faTrash, faCheck } from "@fortawesome/free-solid-svg-icons";
-
+import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrash, faCheck } from '@fortawesome/free-solid-svg-icons';
+import useTask from './useTask';
 
 export default function Task({
-  task,
+  initialTask,
   deleteTask,
   editTask,
   updateTask,
@@ -13,7 +13,18 @@ export default function Task({
   handleEditDescriptionChange,
   handleEditInputCheckbox,
 }) {
+  const { task, setName, setDescription, toggleCompletion } = useTask(initialTask);
   const isEditing = idEdit === task.id;
+
+  const handleNameChange = (e) => {
+    setName(e.target.value);
+    handleEditInputChange(e, task.id);
+  };
+
+  const handleDescriptionChange = (e) => {
+    setDescription(e.target.value);
+    handleEditDescriptionChange(e, task.id);
+  };
 
   return (
     <div>
@@ -24,14 +35,15 @@ export default function Task({
           onChange={(e) => handleEditInputCheckbox(e, task.id)}
         />
         {isEditing ? (
-          <>
+          <form>
             <input
               className="input-edit"
               type="text"
               value={task.name}
-              onChange={(e) => handleEditInputChange(e, task.id)}
+              onChange={handleNameChange}
               onKeyDown={(event) => {
                 if (event.keyCode === 13) {
+                  event.preventDefault();
                   updateTask(task.id);
                 }
               }}
@@ -40,27 +52,27 @@ export default function Task({
               className="input-edit"
               type="text"
               value={task.description}
-              onChange={(e) => handleEditDescriptionChange(e, task.id)}
+              onChange={handleDescriptionChange}
               onKeyDown={(event) => {
                 if (event.keyCode === 13) {
+                  event.preventDefault();
                   updateTask(task.id);
                 }
               }}
             />
-          </>
+          </form>
         ) : (
           <>
-            <p style={task.completed ? { textDecoration: "line-through" } : {}}>
+            <p style={task.completed ? { textDecoration: 'line-through' } : {}}>
               {task.name}
             </p>
 
-            <p style={task.completed ? { textDecoration: "line-through" } : {}}>
+            <p style={task.completed ? { textDecoration: 'line-through' } : {}}>
               {task.description}
             </p>
           </>
         )}
 
-        {/* //Create buttons  */}
         <div>
           {isEditing ? (
             <button onClick={() => updateTask(task.id)}>
